@@ -3,7 +3,12 @@ interface BotResponse {
   text: string;
 }
 
-export const generateBotResponse = async (userMessage: string): Promise<BotResponse> => {
+type ChatContext = "book";
+
+export const generateBotResponse = async (
+  userMessage: string,
+  options?: { context?: ChatContext; bookPdfUrl?: string }
+): Promise<BotResponse> => {
   // const fallbackResponses: { [key: string]: string } = {
   //   direitos:
   //     "Os trabalhadores domésticos têm direito a: salário mínimo, 13º salário, férias remuneradas, FGTS, horas extras, adicional noturno e muito mais. Qual direito específico você gostaria de conhecer melhor?",
@@ -27,7 +32,11 @@ export const generateBotResponse = async (userMessage: string): Promise<BotRespo
     const res = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userMessage }),
+      body: JSON.stringify({
+        userMessage,
+        context: "book",
+        bookPdfUrl: options?.bookPdfUrl,
+      }),
     });
 
     const data = await res.json();

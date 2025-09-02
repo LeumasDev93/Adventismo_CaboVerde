@@ -4,9 +4,7 @@
 import { Inter } from "next/font/google";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import "./globals.css";
-import { SessionProvider } from "next-auth/react";
 import { Suspense, useEffect } from "react";
-import AnalyticsHandler from "@/components/AnalyticsHandler";
 import { urlBase64ToUint8Array } from "@/utils/push";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -21,7 +19,6 @@ export default function RootLayout({
       try {
         const permission = await Notification.requestPermission();
         if (permission !== "granted") {
-          //console.warn("Permissão de notificação negada");
           return;
         }
 
@@ -36,8 +33,6 @@ export default function RootLayout({
             process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
           ),
         });
-
-        //console.log("Inscrição criada:", subscription);
 
         const res = await fetch("/api/notifications/subscribe", {
           method: "POST",
@@ -73,24 +68,17 @@ export default function RootLayout({
           name="apple-mobile-web-app-status-bar-style"
           content="black-translucent"
         />
-        <title>IA - Lição da Escola Sabatina</title>
+        <title>IA - História do Adventismo em Cabo Verde</title>
         <meta
           name="description"
-          content="Assistente virtual para estudos da Lição da Escola Sabatina"
+          content="Assistente virtual para estudos da História do Adventismo em Cabo Verde"
         />
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/icons/favicon.ico" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
       </head>
       <body className={inter.className}>
-        <SessionProvider>
-          <ThemeProvider>
-            <Suspense>
-              <AnalyticsHandler />
-            </Suspense>
-            {children}
-          </ThemeProvider>
-        </SessionProvider>
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );

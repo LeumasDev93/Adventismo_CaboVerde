@@ -1,6 +1,8 @@
 "use server";
 
-import { auth, signIn, signOut } from "@/app/lib/auth"
+import { auth, signIn, signOut } from "../lib/auth";
+
+
 
 export async function handleAuth() {
 

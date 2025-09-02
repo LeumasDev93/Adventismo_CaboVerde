@@ -1,29 +1,65 @@
-// next.config.js
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  disable: process.env.NODE_ENV === 'development',
-  register: true,
-  skipWaiting: true,
-  scope: '/',
-  runtimeCaching: [
-    {
-      urlPattern: /^https?.*/,
-      handler: 'NetworkFirst',
-      options: {
-        cacheName: 'offline-cache',
-        expiration: {
-          maxEntries: 200,
-        },
-      },
-    },
-  ],
-})
+import type { NextConfig } from 'next'
 
-module.exports = withPWA({
+const nextConfig: NextConfig = {
   reactStrictMode: true,
-   serverExternalPackages: ['puppeteer'],
-    images: {
+  
+  // Configuração de imagens
+  images: {
     domains: ['lh3.googleusercontent.com'],
   },
-  // Outras configurações do Next.js
-})
+  
+  // Configuração experimental
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'react-icons'],
+  },
+  
+  // Configuração de webpack para otimização
+  webpack: (config, { isServer }) => {
+    // Otimizações para o lado do cliente
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+      }
+    }
+    
+    return config
+  },
+  
+  // Configuração de headers
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin',
+          },
+        ],
+      },
+    ]
+  },
+  
+  // Configuração de redirecionamentos
+  async redirects() {
+    return []
+  },
+  
+  // Configuração de rewrites
+  async rewrites() {
+    return []
+  },
+}
+
+export default nextConfig

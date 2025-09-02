@@ -4,7 +4,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTheme, ThemeType } from "@/contexts/ThemeContext";
 
+// "dark" deve ser o tema padrão
 const themes = [
+  {
+    id: "dark" as const,
+    name: "Escuro",
+    icon: "🌙",
+    bgColor: "bg-gray-800",
+    hoverBgColor: "bg-gray-700",
+    textColor: "text-white",
+    borderColor: "border-gray-700",
+  },
   {
     id: "system" as const,
     name: "Sistema",
@@ -23,15 +33,6 @@ const themes = [
     textColor: "text-gray-800",
     borderColor: "border-gray-300",
   },
-  {
-    id: "dark" as const,
-    name: "Escuro",
-    icon: "🌙",
-    bgColor: "bg-gray-800",
-    hoverBgColor: "bg-gray-700",
-    textColor: "text-white",
-    borderColor: "border-gray-700",
-  },
 ];
 
 interface ThemeSwitchProps {
@@ -46,8 +47,9 @@ export const ThemeSwitch: React.FC<ThemeSwitchProps> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
+  // "dark" como fallback padrão
   const currentTheme = themes.find((t) => t.id === theme) || themes[0];
-  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
+  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("dark");
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");

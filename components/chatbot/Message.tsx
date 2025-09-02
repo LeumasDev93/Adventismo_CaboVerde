@@ -8,10 +8,12 @@ import Image from "next/image";
 import logo2 from "@/assets/Logo2.png";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
-import { useSupabaseUser } from "@/hooks/useComponentClient";
+import { useSupabaseUser } from "@/hooks/useSupabaseUser";
 
 interface MessageProps {
-  message: MessageType & { id?: string };
+  message: MessageType & {
+    id?: string;
+  };
   isLastMessage?: boolean;
   onActionClick?: (action: "copy" | "pdf" | "speak") => void;
 }
@@ -201,7 +203,7 @@ const Message: React.FC<MessageProps> = ({
     onActionClick?.("copy");
   };
 
-  const handleGeneratePDF = async (lessonTitle: string) => {
+  const handleGeneratePDF = async (topicTitle: string) => {
     onActionClick?.("pdf");
     try {
       const pdf = new jsPDF({
@@ -243,8 +245,8 @@ const Message: React.FC<MessageProps> = ({
         }
       };
 
-      // Título principal (Lições da Semana)
-      addText(lessonTitle, titleSize, "bold");
+      // Título principal (Análise sobre Karl Marx)
+      addText(topicTitle, titleSize, "bold");
       yPosition += lineHeight;
 
       // Data/hora
@@ -320,7 +322,7 @@ const Message: React.FC<MessageProps> = ({
         { align: "right" }
       );
 
-      pdf.save(`${lessonTitle.replace(/[^a-z0-9]/gi, "_")}.pdf`);
+      pdf.save(`${topicTitle.replace(/[^a-z0-9]/gi, "_")}.pdf`);
       setPdfSalve(true);
       setTimeout(() => setPdfSalve(false), 2000);
     } catch (error) {
@@ -335,10 +337,10 @@ const Message: React.FC<MessageProps> = ({
       const pdf = new jsPDF();
       pdf.setFont(mainFont);
       pdf.setFontSize(titleSize);
-      pdf.text(lessonTitle, margin, margin);
+      pdf.text(topicTitle, margin, margin);
       pdf.setFontSize(textSize);
       pdf.text(message.text, margin, margin + 10);
-      pdf.save(`${lessonTitle}_simplificado.pdf`);
+      pdf.save(`${topicTitle}_simplificado.pdf`);
     }
   };
 
@@ -360,14 +362,6 @@ const Message: React.FC<MessageProps> = ({
         {isBot ? (
           <Image
             src={logo2}
-            alt="User profile"
-            width={20}
-            height={20}
-            className="w-full h-full rounded-full"
-          />
-        ) : user?.user?.user_metadata.avatar_url ? (
-          <Image
-            src={user.user?.user_metadata?.avatar_url}
             alt="User profile"
             width={20}
             height={20}
@@ -416,7 +410,7 @@ const Message: React.FC<MessageProps> = ({
             )}
           </button>
           <button
-            onClick={() => handleGeneratePDF("Resumo")}
+            onClick={() => handleGeneratePDF("História do Adventismo")}
             className={`p-1 rounded-full ${
               isDark
                 ? "bg-gray-700 hover:bg-gray-600"
