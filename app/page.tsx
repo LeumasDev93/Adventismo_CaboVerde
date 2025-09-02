@@ -540,7 +540,7 @@ export default function Home() {
           </div>
 
           {/* Área de conteúdo com scroll */}
-          <div className="flex-1 overflow-y-auto p-3 sm:p-6 bg-gray-50 dark:bg-gray-900 transition-colors">
+          <div className="flex-1 p-3 sm:p-6 bg-gray-50 dark:bg-gray-900 transition-colors">
             <div className="max-w-6xl mx-auto">
               {/* Cards de Quick Start */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12 px-2 sm:px-0">
