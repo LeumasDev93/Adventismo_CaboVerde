@@ -5,7 +5,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useEffect, useState } from "react";
 import { createComponentClient } from "@/models/supabase";
 import Image from "next/image";
-import logo1 from "@/assets/Logo1.png";
+import logo1 from "@/assets/logo2.png";
 import { useRouter } from "next/navigation";
 import { AlertCircle, Mail, User, Lock } from "lucide-react";
 
