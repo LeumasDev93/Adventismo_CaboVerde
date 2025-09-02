@@ -26,8 +26,8 @@ import { generateBotResponse } from "@/utils/botResponses";
 import Message from "@/components/chatbot/Message";
 import TypingIndicator from "@/components/chatbot/TypingIndicator";
 import Image from "next/image";
-import logo1 from "../assets/logo.png";
-import logo2 from "../assets/logo2.png";
+import logo1 from "@/assets/logo.png";
+import logo2 from "@/assets/logo2.png";
 
 import ChatSidebar from "@/components/Header";
 import { useChatHistory } from "@/hooks/useChatHistory";
