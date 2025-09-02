@@ -11,7 +11,7 @@ import { IoIosLogIn, IoIosLogOut } from "react-icons/io";
 import { BsSend } from "react-icons/bs";
 
 import Image from "next/image";
-import logo2 from "@/assets/Logo2.png";
+import logo2 from "@/assets/logo2.png";
 import Link from "next/link";
 import { createComponentClient } from "@/models/supabase";
 import { useRouter } from "next/navigation";
