@@ -26,8 +26,8 @@ import { generateBotResponse } from "@/utils/botResponses";
 import Message from "@/components/chatbot/Message";
 import TypingIndicator from "@/components/chatbot/TypingIndicator";
 import Image from "next/image";
-import logo1 from "@/assets/logo.png";
-import logo2 from "@/assets/logo2.png";
+import LgoTemaClaro from "@/assets/logo.png";
+import LogoTemaEscura from "@/assets/LgoTemaEscuro.png";
 
 import ChatSidebar from "@/components/Header";
 import { useChatHistory } from "@/hooks/useChatHistory";
@@ -480,7 +480,7 @@ export default function Home() {
                   >
                     {/* Logo para tema claro */}
                     <Image
-                      src={logo1}
+                      src={LgoTemaClaro}
                       alt="Logo História do Adventismo - Tema Claro"
                       width={96}
                       height={96}
@@ -499,7 +499,7 @@ export default function Home() {
                   >
                     {/* Logo para tema escuro */}
                     <Image
-                      src={logo2}
+                      src={LogoTemaEscura}
                       alt="Logo História do Adventismo - Tema Escuro"
                       width={96}
                       height={96}
