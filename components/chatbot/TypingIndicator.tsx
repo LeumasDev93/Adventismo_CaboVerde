@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import Image from "next/image";
-import logo2 from "@/assets/Logo2.png";
+import logo2 from "@/assets/LgoTemaEscuro.png";
 
 const TypingIndicator: React.FC = () => {
   const { theme } = useTheme();

@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown";
 import { MessageType } from "@/types";
 import { useTheme } from "@/contexts/ThemeContext";
 import Image from "next/image";
-import logo2 from "@/assets/Logo2.png";
+import logo2 from "@/assets/LgoTemaEscuro.png";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
 import { useSupabaseUser } from "@/hooks/useSupabaseUser";
