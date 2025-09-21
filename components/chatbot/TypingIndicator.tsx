@@ -36,42 +36,40 @@ const TypingIndicator: React.FC = () => {
       <div className="flex max-w-[80%] flex-row">
         <div className="flex-shrink-0 mr-2 self-end">
           <div
-            className={`w-8 h-8 rounded-full flex items-center justify-center ${
-              isDark ? "bg-gray-200 text-white" : "bg-white text-gray-800"
+            className={`sm:w-14 sm:h-14 w-10 h-10 rounded-full flex items-center justify-center overflow-hidden ${
+              isDark ? "bg-gray-700 " : "bg-gray-700 p-1"
             }`}
           >
             <Image
               src={logo2}
               alt="User profile"
-              width={20}
-              height={20}
-              className="w-full h-full rounded-full"
+              width={100}
+              height={100}
+              className="w-full h-full object-cover rounded-full"
             />
           </div>
         </div>
 
         <div>
           <div
-            className={`px-4 py-3 rounded-2xl rounded-bl-none shadow-sm ${
-              isDark ? "bg-gray-800 text-white" : "bg-gray-100 text-gray-900"
-            }`}
+            className={`px-4 py-3 rounded-2xl rounded-bl-none shadow-sm bg-gray-700`}
           >
             <div className="flex space-x-1">
               <div
                 className={`w-2 h-2 rounded-full animate-bounce ${
-                  isDark ? "bg-gray-300" : "bg-gray-500"
+                  isDark ? "bg-gray-700" : "bg-gray-200"
                 }`}
                 style={{ animationDelay: "0ms" }}
               />
               <div
                 className={`w-2 h-2 rounded-full animate-bounce ${
-                  isDark ? "bg-gray-300" : "bg-gray-500"
+                  isDark ? "bg-gray-300" : "bg-gray-200"
                 }`}
                 style={{ animationDelay: "150ms" }}
               />
               <div
                 className={`w-2 h-2 rounded-full animate-bounce ${
-                  isDark ? "bg-gray-300" : "bg-gray-500"
+                  isDark ? "bg-gray-300" : "bg-gray-200"
                 }`}
                 style={{ animationDelay: "300ms" }}
               />
@@ -79,10 +77,10 @@ const TypingIndicator: React.FC = () => {
           </div>
           <div
             className={`text-xs mt-1 text-left ${
-              isDark ? "text-gray-400" : "text-gray-500"
+              isDark ? "text-gray-400" : "text-gray-200"
             }`}
           >
-            respondendo...
+            Buscando Resposta...
           </div>
         </div>
       </div>

@@ -3,6 +3,9 @@ import { createComponentClient } from "@/models/supabase";
 import fs from 'fs';
 import path from 'path';
 
+// Cache global para o conteúdo do livro
+let bookContentCache: BookContent | null = null;
+
 export interface BookContent {
   id: number;
   title: string;
@@ -165,7 +168,7 @@ export async function saveBookContentToSupabase(): Promise<boolean> {
     }
     
     const bookData = {
-      title: "História do Adventismo em Cabo Verde",
+      title: "O que dizer dos adventistas em Cabo Verde",
       author: "Karl Marx Morgan Lima Monteiro",
       extracted_at: new Date().toISOString(),
       full_content: content,
@@ -202,6 +205,11 @@ export async function saveBookContentToSupabase(): Promise<boolean> {
 }
 
 export async function loadBookContent(): Promise<BookContent | null> {
+  // Retornar cache se disponível
+  if (bookContentCache) {
+    return bookContentCache;
+  }
+
   try {
     // Primeiro, tentar carregar do arquivo local
     const livroPath = path.join(process.cwd(), 'data', 'livro-adventismo-cabo-verde.txt');
@@ -341,9 +349,9 @@ export async function loadBookContent(): Promise<BookContent | null> {
         });
       }
       
-      return {
+      const bookContent = {
         id: 1,
-        title: "História do Adventismo em Cabo Verde",
+        title: "O que dizer dos adventistas em Cabo Verde",
         author: "Karl Marx Morgan Lima Monteiro",
         extracted_at: new Date().toISOString(),
         full_content: content,
@@ -352,6 +360,10 @@ export async function loadBookContent(): Promise<BookContent | null> {
         total_words: content.split(/\s+/).length,
         sections: sections
       };
+      
+      // Cache o resultado
+      bookContentCache = bookContent;
+      return bookContent;
     }
     
     // Se não encontrar o arquivo local, tentar do Supabase
@@ -368,6 +380,8 @@ export async function loadBookContent(): Promise<BookContent | null> {
       return null;
     }
     
+    // Cache o resultado do Supabase
+    bookContentCache = data;
     return data;
   } catch (error) {
     console.error('Erro ao carregar conteúdo do livro:', error);
@@ -462,40 +476,179 @@ export function searchBookContent(content: BookContent, query: string): string {
 }
 
 export function getRelevantContent(content: BookContent, userMessage: string): string {
-  // Buscar conteúdo relevante baseado na pergunta do usuário
+  const query = userMessage.toLowerCase();
+  
+  // Busca específica para primeiros missionários e fundadores
+  if (query.includes('primeiros') && (query.includes('missionários') || query.includes('fundadores') || query.includes('pioneiros'))) {
+    return searchForMissionaries(content);
+  }
+  
+  // Busca específica para nomes de pessoas
+  const names = ['antónio gomes', 'alberto raposo', 'américo rodrigues', 'antónio justo soares', 'joaquim morgado', 'ernesto ferreira'];
+  const foundNames = names.filter(name => query.includes(name));
+  
+  if (foundNames.length > 0) {
+    return searchForSpecificPeople(content, foundNames);
+  }
+  
+  // Busca específica para primeira igreja
+  if (query.includes('primeira igreja') || query.includes('primeira congregação')) {
+    return searchForFirstChurch(content);
+  }
+  
+  // Busca específica para primeiros batismos
+  if (query.includes('primeiros batismos') || query.includes('primeiro batismo')) {
+    return searchForFirstBaptisms(content);
+  }
+  
+  // Busca específica para primeira escola
+  if (query.includes('primeira escola') || query.includes('primeira escola adventista')) {
+    return searchForFirstSchool(content);
+  }
+  
+  // Busca geral por termos específicos
   const relevantContent = searchBookContent(content, userMessage);
-  
-  // Se o conteúdo relevante for muito longo, pegar apenas uma parte
-  if (relevantContent.length > 15000) {
-    return relevantContent.substring(0, 15000) + '\n\n... (conteúdo continua)';
+  if (relevantContent && relevantContent !== content.full_content) {
+    return relevantContent;
   }
   
-  // Se o conteúdo relevante for muito curto, incluir mais contexto
-  if (relevantContent.length < 3000) {
-    // Incluir seções relacionadas para dar mais contexto
-    const searchTerms = userMessage.toLowerCase().split(' ');
-    const additionalSections = content.sections.filter(section => {
-      const sectionText = (section.title + ' ' + section.content).toLowerCase();
-      return searchTerms.some(term => sectionText.includes(term));
-    });
-    
-    if (additionalSections.length > 0) {
-      // Ordenar por relevância
-      const scoredSections = additionalSections.map(section => {
-        const sectionText = (section.title + ' ' + section.content).toLowerCase();
-        const score = searchTerms.filter(term => sectionText.includes(term)).length;
-        return { section, score };
-      }).sort((a, b) => b.score - a.score);
-      
-      // Pegar as seções mais relevantes
-      const topSections = scoredSections.slice(0, 3);
-      const additionalContent = topSections.map(({ section }) => 
-        `## ${section.title}\n\n${section.content}`
-      ).join('\n\n');
-      
-      return relevantContent + '\n\n' + additionalContent;
+  // Se não encontrou nada específico, retornar o conteúdo completo
+  const maxLength = 300000;
+  if (content.full_content.length > maxLength) {
+    return content.full_content.substring(0, maxLength) + '\n\n... (conteúdo continua)';
+  }
+  
+  return content.full_content;
+}
+
+// Função específica para buscar informações sobre missionários
+function searchForMissionaries(content: BookContent): string {
+  const fullText = content.full_content.toLowerCase();
+  let result = '';
+  
+  // Buscar seções específicas sobre missionários
+  const missionarySections = content.sections.filter(section => {
+    const sectionText = (section.title + ' ' + section.content).toLowerCase();
+    return sectionText.includes('missionário') || 
+           sectionText.includes('pioneiro') || 
+           sectionText.includes('fundador') ||
+           sectionText.includes('antónio gomes') ||
+           sectionText.includes('alberto raposo') ||
+           sectionText.includes('américo rodrigues') ||
+           sectionText.includes('antónio justo soares');
+  });
+  
+  if (missionarySections.length > 0) {
+    result += missionarySections.map(section => 
+      `## ${section.title}\n\n${section.content}`
+    ).join('\n\n');
+  }
+  
+  // Buscar contexto específico sobre cada missionário
+  const missionaries = [
+    'antónio gomes', 'alberto raposo', 'américo rodrigues', 'antónio justo soares',
+    'joaquim morgado', 'ernesto ferreira', 'manuel andrade', 'nhô mocho'
+  ];
+  
+  missionaries.forEach(missionary => {
+    if (fullText.includes(missionary)) {
+      const index = content.full_content.toLowerCase().indexOf(missionary);
+      const startIndex = Math.max(0, index - 1000);
+      const endIndex = Math.min(content.full_content.length, index + 2000);
+      const context = content.full_content.substring(startIndex, endIndex);
+      result += `\n\n## Informações sobre ${missionary.toUpperCase()}\n\n${context}`;
     }
+  });
+  
+  return result || content.full_content;
+}
+
+// Função específica para buscar pessoas específicas
+function searchForSpecificPeople(content: BookContent, names: string[]): string {
+  let result = '';
+  
+  names.forEach(name => {
+    const index = content.full_content.toLowerCase().indexOf(name);
+    if (index !== -1) {
+      const startIndex = Math.max(0, index - 1500);
+      const endIndex = Math.min(content.full_content.length, index + 2500);
+      const context = content.full_content.substring(startIndex, endIndex);
+      result += `\n\n## Informações sobre ${name.toUpperCase()}\n\n${context}`;
+    }
+  });
+  
+  return result || content.full_content;
+}
+
+// Função específica para buscar primeira igreja
+function searchForFirstChurch(content: BookContent): string {
+  const fullText = content.full_content.toLowerCase();
+  let result = '';
+  
+  // Buscar seções sobre primeira igreja
+  const churchSections = content.sections.filter(section => {
+    const sectionText = (section.title + ' ' + section.content).toLowerCase();
+    return sectionText.includes('primeira igreja') || 
+           sectionText.includes('primeira congregação') ||
+           sectionText.includes('nossa senhora do monte') ||
+           sectionText.includes('vila nova sintra');
+  });
+  
+  if (churchSections.length > 0) {
+    result += churchSections.map(section => 
+      `## ${section.title}\n\n${section.content}`
+    ).join('\n\n');
   }
   
-  return relevantContent;
+  // Buscar contexto específico
+  const churchTerms = ['primeira igreja', 'primeira congregação', 'nossa senhora do monte', 'vila nova sintra'];
+  churchTerms.forEach(term => {
+    if (fullText.includes(term)) {
+      const index = content.full_content.toLowerCase().indexOf(term);
+      const startIndex = Math.max(0, index - 1000);
+      const endIndex = Math.min(content.full_content.length, index + 2000);
+      const context = content.full_content.substring(startIndex, endIndex);
+      result += `\n\n## ${term.toUpperCase()}\n\n${context}`;
+    }
+  });
+  
+  return result || content.full_content;
+}
+
+// Função específica para buscar primeiros batismos
+function searchForFirstBaptisms(content: BookContent): string {
+  const fullText = content.full_content.toLowerCase();
+  let result = '';
+  
+  const baptismTerms = ['primeiro batismo', 'primeiros batismos', 'batismo', 'batizados'];
+  baptismTerms.forEach(term => {
+    if (fullText.includes(term)) {
+      const index = content.full_content.toLowerCase().indexOf(term);
+      const startIndex = Math.max(0, index - 1000);
+      const endIndex = Math.min(content.full_content.length, index + 2000);
+      const context = content.full_content.substring(startIndex, endIndex);
+      result += `\n\n## ${term.toUpperCase()}\n\n${context}`;
+    }
+  });
+  
+  return result || content.full_content;
+}
+
+// Função específica para buscar primeira escola
+function searchForFirstSchool(content: BookContent): string {
+  const fullText = content.full_content.toLowerCase();
+  let result = '';
+  
+  const schoolTerms = ['primeira escola', 'primeira escola adventista', 'escola adventista'];
+  schoolTerms.forEach(term => {
+    if (fullText.includes(term)) {
+      const index = content.full_content.toLowerCase().indexOf(term);
+      const startIndex = Math.max(0, index - 1000);
+      const endIndex = Math.min(content.full_content.length, index + 2000);
+      const context = content.full_content.substring(startIndex, endIndex);
+      result += `\n\n## ${term.toUpperCase()}\n\n${context}`;
+    }
+  });
+  
+  return result || content.full_content;
 }

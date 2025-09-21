@@ -25,15 +25,12 @@ import { MessageType } from "@/types";
 import { generateBotResponse } from "@/utils/botResponses";
 import Message from "@/components/chatbot/Message";
 import TypingIndicator from "@/components/chatbot/TypingIndicator";
-import Image from "next/image";
-import LgoTemaClaro from "@/assets/logo.png";
-import LogoTemaEscura from "@/assets/LgoTemaEscuro.png";
 
-import ChatSidebar from "@/components/Header";
+import Header from "@/components/Header";
 import { useChatHistory } from "@/hooks/useChatHistory";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useSupabaseUser } from "@/hooks/useSupabaseUser";
-import { useScroll } from "@/hooks/useScroll";
+import { useSimpleChat } from "@/hooks/useSimpleChat";
 
 import { FaSpinner } from "react-icons/fa6";
 import Link from "next/link";
@@ -88,22 +85,12 @@ interface SpeechRecognitionAlternative {
 
 export default function Home() {
   const currentYear = new Date().getFullYear();
-  const { theme, effectiveTheme } = useTheme();
+  const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const scrollY = useScroll();
-
-  // Garantir que o scroll só funcione no cliente
-  const isScrolled = mounted && scrollY > 50;
-
-  // Debug para verificar se está funcionando
-  useEffect(() => {
-    if (mounted) {
-      console.log("Scroll Y:", scrollY, "IsScrolled:", isScrolled);
-    }
-  }, [scrollY, isScrolled, mounted]);
 
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [selectedQuickStart, setSelectedQuickStart] = useState<string>("");
+  const [showQuickStartsInModal, setShowQuickStartsInModal] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -119,6 +106,13 @@ export default function Home() {
   } = useChatHistory();
 
   const user = useSupabaseUser();
+  const {
+    isStreaming,
+    streamingContent,
+    isTypingComplete,
+    sendMessage,
+    clearStreaming,
+  } = useSimpleChat();
 
   const [messages, setMessages] = useState<MessageType[]>([]);
 
@@ -358,24 +352,35 @@ export default function Home() {
       setInputValue("");
     }
 
-    setIsTyping(true);
-
     try {
-      const botResponse = await generateBotResponse(content, {
-        context: "book",
-        bookPdfUrl: bookPdfUrl,
-      });
+      // Mostrar loading primeiro
+      setIsTyping(true);
+
+      // Usar streaming para a resposta
+      const botResponseText = await sendMessage(content);
+
+      // Adicionar mensagem ao histórico após digitação terminar
       const botMessage: MessageType = {
         id: (Date.now() + 1).toString(),
-        text: botResponse.text,
+        text: botResponseText,
         sender: "bot",
         timestamp: new Date(),
-        parts: [{ text: botResponse.text }],
+        parts: [{ text: botResponseText }],
       };
 
       const finalMessages = [...updatedMessages, botMessage];
       setMessages(finalMessages);
       addMessage(chatId, botMessage);
+
+      // Limpar streaming imediatamente para evitar duplicação
+      clearStreaming();
+      setIsTyping(false);
+      // Verificação adicional - garantir que isTyping seja false
+      setTimeout(() => {
+        if (isTyping) {
+          setIsTyping(false);
+        }
+      }, 100);
     } catch (error) {
       console.error("Erro ao processar mensagem:", error);
       const errorMessage: MessageType = {
@@ -392,8 +397,14 @@ export default function Home() {
 
       setMessages([...updatedMessages, errorMessage]);
       addMessage(chatId, errorMessage);
-    } finally {
+      clearStreaming();
       setIsTyping(false);
+      // Verificação adicional - garantir que isTyping seja false
+      setTimeout(() => {
+        if (isTyping) {
+          setIsTyping(false);
+        }
+      }, 100);
     }
   };
 
@@ -405,7 +416,10 @@ export default function Home() {
     setCurrentChatId(newChatId);
   };
 
-  const openChatModal = (quickStartId?: string) => {
+  const openChatModal = (
+    quickStartId?: string,
+    showQuickStarts: boolean = false
+  ) => {
     if (quickStartId) {
       setSelectedQuickStart(quickStartId);
       const selectedCard = quickStartCards.find(
@@ -414,6 +428,11 @@ export default function Home() {
       if (selectedCard) {
         setInputValue(selectedCard.description);
       }
+      setShowQuickStartsInModal(false); // Quick Start cards não mostram quick starts
+    } else {
+      setSelectedQuickStart("");
+      setInputValue("");
+      setShowQuickStartsInModal(showQuickStarts); // Nova Conversa pode mostrar quick starts
     }
     setIsChatModalOpen(true);
     setMessages([]);
@@ -424,6 +443,7 @@ export default function Home() {
     setIsChatModalOpen(false);
     setSelectedQuickStart("");
     setInputValue("");
+    setShowQuickStartsInModal(false);
   };
 
   if (!mounted) {
@@ -435,14 +455,8 @@ export default function Home() {
   }
 
   return (
-    <main
-      className={`flex flex-col h-screen transition-colors duration-300 ${
-        effectiveTheme === "dark"
-          ? "dark bg-gray-900 text-gray-100"
-          : "bg-gray-50 text-gray-900"
-      }`}
-    >
-      <div className="flex-grow flex overflow-hidden">
+    <main className="flex flex-col min-h-screen transition-colors duration-300 dark bg-gray-900 text-gray-100">
+      <div className="flex-grow flex">
         {/* Menu Lateral */}
         {/* <div className="hidden lg:block">
           <ChatSidebar
@@ -455,100 +469,18 @@ export default function Home() {
         </div> */}
 
         {/* Área de conteúdo principal */}
-        <div className="flex-1 flex flex-col mt-16 lg:mt-0 min-w-0">
-          {/* Header com logo e título */}
-          <div
-            className={`p-4 sm:p-6 shadow-lg border-b border-gray-200 transition-all duration-300 ${
-              effectiveTheme === "dark"
-                ? "dark bg-gray-900 text-gray-100"
-                : "bg-gray-50 text-gray-900"
-            }`}
-          >
-            <div
-              className={`flex items-center justify-center gap-4 sm:gap-6 transition-all duration-300 ${
-                isScrolled ? "flex-row" : "flex-col sm:flex-row"
-              }`}
-            >
-              <div className="relative">
-                {effectiveTheme !== "dark" ? (
-                  <div
-                    className={`bg-white rounded-full flex items-center justify-center shadow-lg border-2 overflow-hidden relative transition-all duration-300 ${
-                      isScrolled
-                        ? "w-12 h-12 sm:w-16 sm:h-16"
-                        : "w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24"
-                    }`}
-                  >
-                    {/* Logo para tema claro */}
-                    <Image
-                      src={LgoTemaClaro}
-                      alt="Logo História do Adventismo - Tema Claro"
-                      width={96}
-                      height={96}
-                      className="w-full h-full object-contain p-2 transition-all duration-300 hover:scale-110"
-                      priority
-                      quality={95}
-                    />
-                  </div>
-                ) : (
-                  <div
-                    className={`bg-gray-800 rounded-full flex items-center justify-center shadow-lg border-2 overflow-hidden relative transition-all duration-300 ${
-                      isScrolled
-                        ? "w-12 h-12 sm:w-16 sm:h-16"
-                        : "w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24"
-                    }`}
-                  >
-                    {/* Logo para tema escuro */}
-                    <Image
-                      src={LogoTemaEscura}
-                      alt="Logo História do Adventismo - Tema Escuro"
-                      width={96}
-                      height={96}
-                      className="w-full h-full object-contain p-2 transition-all duration-300 hover:scale-110"
-                      priority
-                      quality={95}
-                    />
-                  </div>
-                )}
-              </div>
-              <div
-                className={`text-center transition-all duration-300 ${
-                  isScrolled ? "flex-1" : ""
-                }`}
-              >
-                <h1
-                  className={`font-bold bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent transition-all duration-300 ${
-                    isScrolled
-                      ? "text-lg sm:text-xl lg:text-2xl"
-                      : "text-2xl sm:text-3xl lg:text-4xl"
-                  }`}
-                >
-                  História do Adventismo em Cabo Verde
-                </h1>
-                <p
-                  className={`w-[80%] mx-auto text-sm sm:text-base mt-2 text-center transition-all duration-300 ${
-                    isScrolled
-                      ? "opacity-0 max-h-0 overflow-hidden"
-                      : "opacity-100 max-h-20"
-                  }`}
-                >
-                  Descubra a rica história do adventismo em Cabo Verde através
-                  de conversas interativas. Clique em qualquer card para começar
-                  uma conversa especializada!
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Área de conteúdo com scroll */}
-          <div className="flex-1 p-3 sm:p-6 bg-gray-50 dark:bg-gray-900 transition-colors">
-            <div className="max-w-6xl mx-auto">
+        <div className="flex-1 flex flex-col min-w-0">
+          {/* Header Component */}
+          <Header />
+          <div className="flex-1 bg-gray-900 transition-colors ">
+            <div className="max-w-7xl mx-auto">
               {/* Cards de Quick Start */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-12 px-2 sm:px-0">
+              <div className="grid grid-cols-2 px-4 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-8 mb-6 sm:mb-8 md:mb-10 lg:mb-12">
                 {quickStartCards.map((card) => (
                   <div
                     key={card.id}
                     onClick={() => openChatModal(card.id)}
-                    className={`group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl bg-gradient-to-br ${card.bgColor} dark:${card.darkBgColor} border ${card.borderColor} rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl`}
+                    className={`group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl bg-gradient-to-br ${card.bgColor} dark:${card.darkBgColor} border ${card.borderColor} rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 shadow-lg hover:shadow-xl`}
                   >
                     <div className="flex items-center justify-between mb-3 sm:mb-4">
                       <div
@@ -585,10 +517,10 @@ export default function Home() {
               </div>
 
               {/* Card de Nova Conversa */}
-              <div className="text-center px-2 sm:px-0">
+              <div className="text-center mt-4 sm:mt-6 md:mt-8 lg:mt-10">
                 <div
-                  onClick={() => openChatModal()}
-                  className="inline-flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-700 dark:hover:to-gray-600 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl p-6 sm:p-8 cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                  onClick={() => openChatModal(undefined, true)}
+                  className="inline-flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-700 dark:hover:to-gray-600 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
                   <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white shadow-lg">
                     <Plus size={24} className="sm:w-8 sm:h-8" />
@@ -631,7 +563,7 @@ export default function Home() {
                       : "Nova Conversa"}
                   </h3>
                   <p className="text-blue-100 text-xs sm:text-sm truncate">
-                    Especialista em História do Adventismo
+                    Especialista no livro de Karl Marx Morgan Lima Monteiro
                   </p>
                 </div>
               </div>
@@ -657,7 +589,22 @@ export default function Home() {
                     }}
                   />
                 ))}
-                {isTyping && <TypingIndicator />}
+                {isTyping && !isStreaming && !streamingContent && (
+                  <TypingIndicator />
+                )}
+                {isStreaming && streamingContent && (
+                  <Message
+                    message={{
+                      id: "streaming",
+                      text: streamingContent,
+                      sender: "bot",
+                      timestamp: new Date(),
+                      parts: [{ text: streamingContent }],
+                    }}
+                    isStreaming={isStreaming}
+                    streamingContent={streamingContent}
+                  />
+                )}
                 <div ref={messagesEndRef} />
               </div>
             </div>
@@ -666,7 +613,7 @@ export default function Home() {
             <div className="p-3 sm:p-4 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700">
               <div className="max-w-3xl mx-auto">
                 {/* Quick Replies */}
-                {messages.length === 0 && (
+                {messages.length === 0 && showQuickStartsInModal && (
                   <div className="mb-3 sm:mb-4">
                     <div className="flex flex-wrap gap-2">
                       {quickStartCards.map((card) => (
@@ -703,7 +650,7 @@ export default function Home() {
                       }}
                       placeholder={
                         user?.user
-                          ? "Digite sua pergunta sobre a História do Adventismo em Cabo Verde..."
+                          ? "Digite sua pergunta sobre o livro 'O que dizer dos adventistas em Cabo Verde'..."
                           : "Faça login para enviar mensagens..."
                       }
                       rows={3}
@@ -745,21 +692,11 @@ export default function Home() {
       {/* Modal de Login */}
       {alertMessage && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-2 sm:p-4 animate-fadeIn">
-          <div
-            className={`relative flex flex-col max-w-md w-full p-4 sm:p-6 rounded-2xl shadow-2xl transform transition-all duration-300 hover:scale-[1.01] ${
-              effectiveTheme === "dark"
-                ? "bg-gradient-to-br from-gray-800 to-gray-900 border border-purple-500/30 text-white"
-                : "bg-gradient-to-br from-white to-gray-100 border border-purple-300 text-gray-800"
-            }`}
-          >
+          <div className="relative flex flex-col max-w-md w-full p-4 sm:p-6 rounded-2xl shadow-2xl transform transition-all duration-300 hover:scale-[1.01] bg-gradient-to-br from-gray-800 to-gray-900 border border-purple-500/30 text-white">
             {/* Botão de fechar */}
             <button
               onClick={() => setAlert(false)}
-              className={`absolute top-2 sm:top-3 right-2 sm:right-3 p-1 rounded-full ${
-                effectiveTheme === "dark"
-                  ? "hover:bg-gray-700"
-                  : "hover:bg-gray-200"
-              }`}
+              className="absolute top-2 sm:top-3 right-2 sm:right-3 p-1 rounded-full hover:bg-gray-700"
             >
               <X size={18} className="sm:w-5 sm:h-5" />
             </button>
@@ -768,13 +705,7 @@ export default function Home() {
             <div className="flex flex-col items-center text-center space-y-3 sm:space-y-4 mt-4">
               {/* Ícone animado */}
               <div className="relative">
-                <div
-                  className={`absolute inset-0 rounded-full ${
-                    effectiveTheme === "dark"
-                      ? "bg-purple-500/20 animate-ping"
-                      : "bg-purple-300/40 animate-ping"
-                  }`}
-                ></div>
+                <div className="absolute inset-0 rounded-full bg-purple-500/20 animate-ping"></div>
                 <LockKeyhole className="h-10 w-10 sm:h-12 sm:w-12 text-purple-500" />
               </div>
 
@@ -805,11 +736,7 @@ export default function Home() {
             {/* Botão de ação */}
             <Link
               href="/login"
-              className={`mt-4 sm:mt-6 py-2 sm:py-3 px-4 sm:px-6 rounded-xl font-bold text-center transition-all duration-200 shadow-lg text-sm sm:text-base ${
-                effectiveTheme === "dark"
-                  ? "bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 hover:shadow-purple-500/30"
-                  : "bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-400 hover:to-blue-400 hover:shadow-purple-400/40"
-              }`}
+              className="mt-4 sm:mt-6 py-2 sm:py-3 px-4 sm:px-6 rounded-xl font-bold text-center transition-all duration-200 shadow-lg text-sm sm:text-base bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 hover:shadow-purple-500/30"
             >
               Iniciar Sessão Agora
             </Link>

@@ -3,6 +3,15 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   
+  // Configuração para ignorar erros de build
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+  
+  eslint: {
+    ignoreDuringBuilds: false,
+  },
+  
   // Configuração de imagens
   images: {
     domains: ['lh3.googleusercontent.com'],
