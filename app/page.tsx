@@ -33,6 +33,7 @@ import { useSupabaseUser } from "@/hooks/useSupabaseUser";
 import { useSimpleChat } from "@/hooks/useSimpleChat";
 
 import { FaSpinner } from "react-icons/fa6";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import Link from "next/link";
 
 // Tipagens globais para reconhecimento de voz
@@ -91,6 +92,7 @@ export default function Home() {
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
   const [selectedQuickStart, setSelectedQuickStart] = useState<string>("");
   const [showQuickStartsInModal, setShowQuickStartsInModal] = useState(false);
+  const [showWaitMessage, setShowWaitMessage] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -291,6 +293,8 @@ export default function Home() {
   }, [messages, isTyping]);
 
   // Salvar no Supabase automaticamente quando a página carrega
+  // COMENTADO TEMPORARIAMENTE - Funcionalidade desabilitada
+  /*
   useEffect(() => {
     const saveToSupabase = async () => {
       try {
@@ -316,6 +320,7 @@ export default function Home() {
     const timer = setTimeout(saveToSupabase, 2000);
     return () => clearTimeout(timer);
   }, []);
+  */
 
   const handleSendMessage = async (
     e?: React.FormEvent | React.KeyboardEvent,
@@ -440,6 +445,17 @@ export default function Home() {
   };
 
   const closeChatModal = () => {
+    // Não permitir fechar o modal enquanto o chat está respondendo
+    if (isTyping || isStreaming) {
+      // Mostrar mensagem de aguarde
+      setShowWaitMessage(true);
+      // Esconder a mensagem após 3 segundos
+      setTimeout(() => {
+        setShowWaitMessage(false);
+      }, 3000);
+      return;
+    }
+
     setIsChatModalOpen(false);
     setSelectedQuickStart("");
     setInputValue("");
@@ -449,7 +465,7 @@ export default function Home() {
   if (!mounted) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
-        <FaSpinner className="animate-spin text-blue-600 dark:text-blue-400" />
+        <LoadingSpinner size="lg" />
       </div>
     );
   }
@@ -457,20 +473,7 @@ export default function Home() {
   return (
     <main className="flex flex-col min-h-screen transition-colors duration-300 dark bg-gray-900 text-gray-100">
       <div className="flex-grow flex">
-        {/* Menu Lateral */}
-        {/* <div className="hidden lg:block">
-          <ChatSidebar
-            onNewChat={handleNewChat}
-            chatHistory={chatHistory}
-            currentChatId={currentChatId}
-            setCurrentChatId={setCurrentChatId}
-            deleteChat={deleteChat}
-          />
-        </div> */}
-
-        {/* Área de conteúdo principal */}
         <div className="flex-1 flex flex-col min-w-0">
-          {/* Header Component */}
           <Header />
           <div className="flex-1 bg-gray-900 transition-colors ">
             <div className="max-w-7xl mx-auto">
@@ -569,11 +572,39 @@ export default function Home() {
               </div>
               <button
                 onClick={closeChatModal}
-                className="p-1 sm:p-2 hover:bg-white/20 rounded-full transition-colors flex-shrink-0"
+                className="p-1 sm:p-2 hover:bg-white/20 rounded-full transition-colors flex-shrink-0 cursor-pointer"
+                title="Fechar chat"
               >
                 <X size={18} className="sm:w-5 sm:h-5" />
               </button>
             </div>
+
+            {/* Mensagem de Aguarde */}
+            {showWaitMessage && (
+              <div className="bg-yellow-100 dark:bg-yellow-900/30 border-l-4 border-yellow-500 p-3 mx-4 mt-2 rounded-r-lg animate-fadeIn">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <svg
+                      className="h-5 w-5 text-yellow-500 animate-pulse"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-yellow-800 dark:text-yellow-200">
+                      <strong>Aguarde!</strong> Ainda está respondendo. Não é
+                      possível fechar o chat neste momento.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Área de Mensagens */}
             <div className="flex-1 overflow-y-auto p-3 sm:p-4 bg-gray-50 dark:bg-gray-800">
