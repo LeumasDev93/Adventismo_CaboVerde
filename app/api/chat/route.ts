@@ -73,10 +73,10 @@ export async function POST(req: NextRequest) {
      // Obter conteúdo relevante baseado na pergunta
      const relevantContent = getRelevantContent(bookContent, userMessage);
      
-     // Limitar o tamanho do conteúdo para evitar timeouts
-     const maxContentLength = 50000; // 50KB máximo
+     // Aumentar significativamente o limite de conteúdo para respostas completas
+     const maxContentLength = 200000; // 200KB para respostas mais completas
      const limitedContent = relevantContent.length > maxContentLength 
-       ? relevantContent.substring(0, maxContentLength) + '\n\n... (conteúdo truncado)'
+       ? relevantContent.substring(0, maxContentLength) + '\n\n... (conteúdo continua no livro)'
        : relevantContent;
      
               const chat = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }).startChat({
