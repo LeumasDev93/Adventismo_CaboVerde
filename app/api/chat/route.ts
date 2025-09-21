@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
        ? relevantContent.substring(0, maxContentLength) + '\n\n... (conteúdo continua no livro)'
        : relevantContent;
      
-              const chat = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }).startChat({
+              const chat = genAI.getGenerativeModel({ model: "gemini-2.5-flash" }).startChat({
                    history: [
                        {
                          role: "user",
