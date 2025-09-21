@@ -36,8 +36,8 @@ const TypingIndicator: React.FC = () => {
       <div className="flex max-w-[80%] flex-row">
         <div className="flex-shrink-0 mr-2 self-end">
           <div
-            className={`sm:w-14 sm:h-14 w-10 h-10 rounded-full flex items-center justify-center overflow-hidden ${
-              isDark ? "bg-gray-700 " : "bg-gray-700 p-1"
+            className={`sm:w-14 sm:h-14 w-10 h-10 rounded-full shadow-2xl flex items-center justify-center overflow-hidden ${
+              isDark ? "bg-gray-700 " : "bg-gray-700 p-2"
             }`}
           >
             <Image

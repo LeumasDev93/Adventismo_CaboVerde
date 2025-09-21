@@ -348,7 +348,7 @@ const Message: React.FC<MessageProps> = memo(
       >
         {/* Avatar */}
         <div
-          className={`flex items-center justify-center bg-gray-700 rounded-full flex-shrink-0 mr-3 ${
+          className={`flex items-center justify-center bg-gray-700 rounded-full shadow-2xl p-2 flex-shrink-0 mr-3 ${
             isBot ? "h-10 w-10 sm:w-14 sm:h-14" : "h-10 w-10 sm:w-12 sm:h-12"
           }`}
           aria-label={isBot ? "Bot" : "Usuário"}
@@ -362,7 +362,7 @@ const Message: React.FC<MessageProps> = memo(
               className="w-full h-full object-cover rounded-full"
             />
           ) : (
-            <CircleUser size={20} />
+            <CircleUser size={24} />
           )}
         </div>
 
