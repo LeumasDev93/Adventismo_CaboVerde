@@ -20,7 +20,9 @@ export const useSimpleChat = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Erro na requisição');
+        const errorData = await response.json().catch(() => ({}));
+        const errorMessage = errorData.message || `Erro ${response.status}: ${response.statusText}`;
+        throw new Error(errorMessage);
       }
 
       const result = await response.json();

@@ -73,7 +73,13 @@ export async function POST(req: NextRequest) {
      // Obter conteúdo relevante baseado na pergunta
      const relevantContent = getRelevantContent(bookContent, userMessage);
      
-             const chat = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" }).startChat({
+     // Limitar o tamanho do conteúdo para evitar timeouts
+     const maxContentLength = 50000; // 50KB máximo
+     const limitedContent = relevantContent.length > maxContentLength 
+       ? relevantContent.substring(0, maxContentLength) + '\n\n... (conteúdo truncado)'
+       : relevantContent;
+     
+              const chat = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }).startChat({
                    history: [
                        {
                          role: "user",
@@ -94,7 +100,7 @@ export async function POST(req: NextRequest) {
    
      const result = await chat.sendMessage(`CONTEÚDO DO LIVRO "O que dizer dos adventistas em Cabo Verde" de Karl Marx Morgan Lima Monteiro:
 
-${relevantContent}
+${limitedContent}
 
 PERGUNTA: ${userMessage}
 
@@ -117,11 +123,27 @@ RESPONDA:`);
        timestamp: new Date().toISOString() 
      }, { status: 200 });
   
-    } catch (error: any) {
+    } catch (error: any) {
     console.error("Erro com Gemini:", error);
-      
+    
+    // Verificar se é um erro de timeout ou rate limit
+    if (error.message?.includes('timeout') || error.message?.includes('rate limit')) {
+      return NextResponse.json(
+        { message: "O servidor está temporariamente sobrecarregado. Tente novamente em alguns segundos." },
+        { status: 503 }
+      );
+    }
+    
+    // Verificar se é um erro de API key
+    if (error.message?.includes('API key') || error.message?.includes('authentication')) {
+      return NextResponse.json(
+        { message: "Erro de configuração da API. Contate o administrador." },
+        { status: 500 }
+      );
+    }
+      
     return NextResponse.json(
-        { message: "Desculpe, estou tendo dificuldades técnicas. Poderia tentar novamente?" },
+        { message: "Desculpe, estou tendo dificuldades técnicas. Poderia tentar novamente?" },
       { status: 500 }
     );
   }
