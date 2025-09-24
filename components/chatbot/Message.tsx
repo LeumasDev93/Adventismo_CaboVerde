@@ -143,8 +143,8 @@ const Message: React.FC<MessageProps> = memo(
       : "bg-blue-200 text-blue-800";
 
     const botBubbleClass = isDark
-      ? "bg-gradient-to-r from-blue-600 to-purple-700 text-white"
-      : "bg-gradient-to-r from-blue-100 to-purple-100 text-gray-900";
+      ? "bg-gray-800 text-white"
+      : "bg-gray-100 text-gray-900";
 
     const botAvatarClass = isDark ? " text-white" : "bg-white text-gray-800";
 
@@ -348,7 +348,7 @@ const Message: React.FC<MessageProps> = memo(
       >
         {/* Avatar */}
         <div
-          className={`flex items-center justify-center bg-gradient-to-r from-blue-600 to-purple-700 rounded-full shadow-2xl p-2 flex-shrink-0 mr-3 ${
+          className={`flex items-center justify-center bg-gray-700 rounded-full shadow-2xl p-2 flex-shrink-0 mr-3 ${
             isBot ? "h-10 w-10 sm:w-14 sm:h-14" : "h-10 w-10 sm:w-12 sm:h-12"
           }`}
           aria-label={isBot ? "Bot" : "Usuário"}
