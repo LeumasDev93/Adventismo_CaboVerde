@@ -478,7 +478,7 @@ export default function Home() {
     <main className="flex flex-col min-h-screen transition-colors duration-300 dark bg-gray-900 text-gray-100">
       <div className="flex-grow flex">
         <div className="flex-1 flex flex-col min-w-0">
-          <Header onNewChat={() => openChatModal()} />
+          <Header onNewChat={() => openChatModal(undefined, true)} />
           <div className="text-center py-6">
             <h1 className="font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent text-3xl xl:text-4xl">
               O que dizer dos adventistas em Cabo Verde
@@ -500,7 +500,7 @@ export default function Home() {
                     className={`group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl bg-gradient-to-br ${card.bgColor} dark:${card.darkBgColor} border ${card.borderColor} rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 shadow-lg hover:shadow-xl relative overflow-hidden`}
                   >
                     {/* Overlay escuro para melhor legibilidade */}
-                    <div className="absolute inset-0 bg-black/40 rounded-2xl"></div>
+                    <div className="absolute inset-0 bg-black/70 rounded-2xl"></div>
                     <div className="relative z-10 flex items-center justify-between mb-3 sm:mb-4">
                       <div
                         className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r ${card.color} rounded-xl flex items-center justify-center text-white shadow-lg`}
