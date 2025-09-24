@@ -368,7 +368,7 @@ const Message: React.FC<MessageProps> = memo(
 
         {/* Bubble da mensagem */}
         <div
-          className={`max-w-[75%] p-4 whitespace-pre-wrap break-words ${
+          className={`max-w-[75%] p-4 whitespace-pre-wrap break-words text-justify ${
             isBot ? botBubbleClass : "bg-blue-600 rounded-lg shadow-lg"
           } `}
         >
