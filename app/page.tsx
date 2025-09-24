@@ -151,11 +151,11 @@ export default function Home() {
       description:
         "Descubra quem foram os primeiros missionários e fundadores do adventismo em Cabo Verde",
       icon: Users,
-      color: "from-blue-500 to-cyan-500",
-      bgColor: "from-blue-50 to-cyan-50",
-      darkBgColor: "from-blue-900/30 to-cyan-900/30",
-      borderColor: "border-blue-200 dark:border-blue-700",
-      textColor: "text-blue-800 dark:text-blue-200",
+      color: "from-blue-400 to-blue-500",
+      bgColor: "from-blue-400 to-blue-600 dark:from-blue-600 dark:to-blue-800",
+      darkBgColor: "from-blue-600 to-blue-800",
+      borderColor: "border-blue-300 dark:border-blue-500",
+      textColor: "text-white",
     },
     {
       id: "primeira-igreja",
@@ -164,11 +164,12 @@ export default function Home() {
       description:
         "Conheça a história da primeira igreja adventista fundada na Ilha Brava",
       icon: Church,
-      color: "from-purple-500 to-pink-500",
-      bgColor: "from-purple-50 to-pink-50",
-      darkBgColor: "from-purple-900/30 to-pink-900/30",
-      borderColor: "border-purple-200 dark:border-purple-700",
-      textColor: "text-purple-800 dark:text-purple-200",
+      color: "from-purple-400 to-purple-500",
+      bgColor:
+        "from-purple-400 to-purple-600 dark:from-purple-600 dark:to-purple-800",
+      darkBgColor: "from-purple-600 to-purple-800",
+      borderColor: "border-purple-300 dark:border-purple-500",
+      textColor: "text-white",
     },
     {
       id: "primeiro-pastor",
@@ -177,11 +178,12 @@ export default function Home() {
       description:
         "Saiba mais sobre o Pastor Alberto Raposo e sua chegada a Cabo Verde",
       icon: Star,
-      color: "from-yellow-500 to-orange-500",
-      bgColor: "from-yellow-50 to-orange-50",
-      darkBgColor: "from-yellow-900/30 to-orange-900/30",
-      borderColor: "border-yellow-200 dark:border-yellow-700",
-      textColor: "text-yellow-800 dark:text-yellow-200",
+      color: "from-amber-400 to-amber-500",
+      bgColor:
+        "from-amber-400 to-amber-600 dark:from-amber-600 dark:to-amber-800",
+      darkBgColor: "from-amber-600 to-amber-800",
+      borderColor: "border-amber-300 dark:border-amber-500",
+      textColor: "text-white",
     },
     {
       id: "primeiros-batismos",
@@ -190,11 +192,12 @@ export default function Home() {
       description:
         "Descubra quando e onde aconteceram os primeiros batismos adventistas",
       icon: Calendar,
-      color: "from-green-500 to-emerald-500",
-      bgColor: "from-green-50 to-emerald-50",
-      darkBgColor: "from-green-900/30 to-emerald-900/30",
-      borderColor: "border-green-200 dark:border-green-700",
-      textColor: "text-green-800 dark:text-green-200",
+      color: "from-emerald-400 to-emerald-500",
+      bgColor:
+        "from-emerald-400 to-emerald-600 dark:from-emerald-600 dark:to-emerald-800",
+      darkBgColor: "from-emerald-600 to-emerald-800",
+      borderColor: "border-emerald-300 dark:border-emerald-500",
+      textColor: "text-white",
     },
     {
       id: "primeira-escola",
@@ -203,11 +206,12 @@ export default function Home() {
       description:
         "Conheça a história da primeira escola adventista em Cabo Verde",
       icon: BookOpen,
-      color: "from-indigo-500 to-blue-500",
-      bgColor: "from-indigo-50 to-blue-50",
-      darkBgColor: "from-indigo-900/30 to-blue-900/30",
-      borderColor: "border-indigo-200 dark:border-indigo-700",
-      textColor: "text-indigo-800 dark:text-indigo-200",
+      color: "from-indigo-400 to-indigo-500",
+      bgColor:
+        "from-indigo-400 to-indigo-600 dark:from-indigo-600 dark:to-indigo-800",
+      darkBgColor: "from-indigo-600 to-indigo-800",
+      borderColor: "border-indigo-300 dark:border-indigo-500",
+      textColor: "text-white",
     },
     {
       id: "expansao",
@@ -216,11 +220,11 @@ export default function Home() {
       description:
         "Como o adventismo se expandiu de Brava para outras ilhas do arquipélago",
       icon: MapPin,
-      color: "from-red-500 to-rose-500",
-      bgColor: "from-red-50 to-rose-50",
-      darkBgColor: "from-red-900/30 to-rose-900/30",
-      borderColor: "border-red-200 dark:border-red-700",
-      textColor: "text-red-800 dark:text-red-200",
+      color: "from-rose-400 to-rose-500",
+      bgColor: "from-rose-400 to-rose-600 dark:from-rose-600 dark:to-rose-800",
+      darkBgColor: "from-rose-600 to-rose-800",
+      borderColor: "border-rose-300 dark:border-rose-500",
+      textColor: "text-white",
     },
   ];
 
@@ -474,7 +478,17 @@ export default function Home() {
     <main className="flex flex-col min-h-screen transition-colors duration-300 dark bg-gray-900 text-gray-100">
       <div className="flex-grow flex">
         <div className="flex-1 flex flex-col min-w-0">
-          <Header />
+          <Header onNewChat={() => openChatModal()} />
+          <div className="text-center py-6">
+            <h1 className="font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent text-3xl xl:text-4xl">
+              O que dizer dos adventistas em Cabo Verde
+            </h1>
+            <p className="w-[80%] mx-auto text-sm xl:text-lg mt-2 text-center text-gray-300 hidden sm:block">
+              Descubra a rica história dos adventistas em Cabo Verde através do
+              livro de Karl Marx Morgan Lima Monteiro. Clique em qualquer card
+              para começar uma conversa especializada!
+            </p>
+          </div>
           <div className="flex-1 bg-gray-900 transition-colors ">
             <div className="max-w-7xl mx-auto">
               {/* Cards de Quick Start */}
@@ -483,9 +497,11 @@ export default function Home() {
                   <div
                     key={card.id}
                     onClick={() => openChatModal(card.id)}
-                    className={`group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl bg-gradient-to-br ${card.bgColor} dark:${card.darkBgColor} border ${card.borderColor} rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 shadow-lg hover:shadow-xl`}
+                    className={`group cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-2xl bg-gradient-to-br ${card.bgColor} dark:${card.darkBgColor} border ${card.borderColor} rounded-2xl p-3 sm:p-4 md:p-5 lg:p-6 shadow-lg hover:shadow-xl relative overflow-hidden`}
                   >
-                    <div className="flex items-center justify-between mb-3 sm:mb-4">
+                    {/* Overlay escuro para melhor legibilidade */}
+                    <div className="absolute inset-0 bg-black/40 rounded-2xl"></div>
+                    <div className="relative z-10 flex items-center justify-between mb-3 sm:mb-4">
                       <div
                         className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r ${card.color} rounded-xl flex items-center justify-center text-white shadow-lg`}
                       >
@@ -493,25 +509,25 @@ export default function Home() {
                       </div>
                       <Play
                         size={16}
-                        className="sm:w-5 sm:h-5 text-white group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors"
+                        className="sm:w-5 sm:h-5 text-white group-hover:text-gray-200 transition-colors"
                       />
                     </div>
 
                     <h3
-                      className={`text-lg sm:text-xl font-bold mb-2 ${card.textColor} dark:text-white`}
+                      className={`relative z-10 text-lg sm:text-xl font-bold mb-2 ${card.textColor}`}
                     >
                       {card.title}
                     </h3>
 
-                    <p className="text-xs sm:text-sm text-gray-700 dark:text-white mb-2 sm:mb-3 font-medium">
+                    <p className="relative z-10 text-xs sm:text-sm text-white/90 mb-2 sm:mb-3 font-medium">
                       {card.subtitle}
                     </p>
 
-                    <p className="text-gray-800 dark:text-gray-200 text-xs sm:text-sm leading-relaxed">
+                    <p className="relative z-10 text-white/80 text-xs sm:text-sm leading-relaxed">
                       {card.description}
                     </p>
 
-                    <div className="mt-3 sm:mt-4 flex items-center text-xs sm:text-sm text-gray-600 dark:text-white">
+                    <div className="relative z-10 mt-3 sm:mt-4 flex items-center text-xs sm:text-sm text-white/70">
                       <MessageCircle size={14} className="sm:w-4 sm:h-4 mr-2" />
                       Clique para conversar
                     </div>
@@ -523,9 +539,9 @@ export default function Home() {
               <div className="text-center mt-4 sm:mt-6 md:mt-8 lg:mt-10">
                 <div
                   onClick={() => openChatModal(undefined, true)}
-                  className="inline-flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-700 dark:hover:to-gray-600 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                  className="inline-flex flex-col sm:flex-row items-center gap-3 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 hover:from-blue-200 hover:to-purple-200 dark:hover:from-blue-800/40 dark:hover:to-purple-800/40 border-2 border-dashed border-blue-300 dark:border-blue-500 rounded-2xl p-4 sm:p-5 md:p-6 lg:p-8 cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-lg"
                 >
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white shadow-lg">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-r from-blue-600 to-purple-700 rounded-full flex items-center justify-center text-white shadow-lg">
                     <Plus size={24} className="sm:w-8 sm:h-8" />
                   </div>
                   <div className="text-center sm:text-left">
@@ -549,7 +565,7 @@ export default function Home() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-2 sm:p-4">
           <div className="relative w-full max-w-4xl h-[90vh] sm:h-[80vh] bg-white dark:bg-gray-900 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
             {/* Header do Modal */}
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 sm:p-4 flex items-center justify-between">
+            <div className="bg-gradient-to-r from-blue-700 to-purple-700 text-white p-3 sm:p-4 flex items-center justify-between">
               <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                 <MessageCircle
                   size={20}
@@ -654,7 +670,7 @@ export default function Home() {
                             setInputValue(card.description);
                             handleSendMessage(undefined, card.description);
                           }}
-                          className={`px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 bg-gradient-to-r ${card.bgColor} dark:${card.darkBgColor} border ${card.borderColor} hover:shadow-md hover:scale-105`}
+                          className={`px-3 py-2 rounded-full text-xs sm:text-sm font-medium transition-all duration-200 bg-gradient-to-r ${card.bgColor} dark:${card.darkBgColor} border ${card.borderColor} hover:shadow-md hover:scale-105 text-white`}
                         >
                           {card.title}
                         </button>
@@ -706,7 +722,7 @@ export default function Home() {
                       <button
                         type="submit"
                         disabled={inputValue.trim() === "" || isTyping}
-                        className="p-1.5 sm:p-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
+                        className="p-1.5 sm:p-2 rounded-full bg-gradient-to-r from-blue-600 to-purple-700 text-white hover:from-blue-700 hover:to-purple-800 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
                         aria-label="Enviar mensagem"
                       >
                         <Send size={16} className="sm:w-[18px] sm:h-[18px]" />
@@ -723,7 +739,7 @@ export default function Home() {
       {/* Modal de Login */}
       {alertMessage && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[100] p-2 sm:p-4 animate-fadeIn">
-          <div className="relative flex flex-col max-w-md w-full p-4 sm:p-6 rounded-2xl shadow-2xl transform transition-all duration-300 hover:scale-[1.01] bg-gradient-to-br from-gray-800 to-gray-900 border border-purple-500/30 text-white">
+          <div className="relative flex flex-col max-w-md w-full p-4 sm:p-6 rounded-2xl shadow-2xl transform transition-all duration-300 hover:scale-[1.01] bg-gradient-to-br from-purple-800 to-blue-900 border border-purple-500/50 text-white">
             {/* Botão de fechar */}
             <button
               onClick={() => setAlert(false)}
@@ -740,7 +756,7 @@ export default function Home() {
                 <LockKeyhole className="h-10 w-10 sm:h-12 sm:w-12 text-purple-500" />
               </div>
 
-              <h3 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent">
+              <h3 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-purple-300 to-blue-400 bg-clip-text text-transparent">
                 Acesso Bloqueado
               </h3>
 
@@ -767,7 +783,7 @@ export default function Home() {
             {/* Botão de ação */}
             <Link
               href="/login"
-              className="mt-4 sm:mt-6 py-2 sm:py-3 px-4 sm:px-6 rounded-xl font-bold text-center transition-all duration-200 shadow-lg text-sm sm:text-base bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 hover:to-blue-500 hover:shadow-purple-500/30"
+              className="mt-4 sm:mt-6 py-2 sm:py-3 px-4 sm:px-6 rounded-xl font-bold text-center transition-all duration-200 shadow-lg text-sm sm:text-base bg-gradient-to-r from-purple-700 to-blue-700 hover:from-purple-600 hover:to-blue-600 hover:shadow-purple-500/30"
             >
               Iniciar Sessão Agora
             </Link>

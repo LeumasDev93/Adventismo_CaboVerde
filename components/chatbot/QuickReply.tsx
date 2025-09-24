@@ -20,24 +20,25 @@ const themeStyles: Record<
   }
 > = {
   system: {
-    bg: "bg-gray-200 dark:bg-gray-600",
-    text: "text-gray-800 dark:text-white",
-    hover: "hover:bg-gray-300 dark:hover:bg-gray-700",
-    focus: "focus:ring-blue-500 dark:focus:ring-gray-300",
+    bg: "bg-gradient-to-r from-blue-400 to-blue-600 dark:from-blue-600 dark:to-blue-800",
+    text: "text-white",
+    hover:
+      "hover:from-blue-500 hover:to-blue-700 dark:hover:from-blue-700 dark:hover:to-blue-900",
+    focus: "focus:ring-blue-500 dark:focus:ring-blue-400",
     shadow: "shadow-md dark:shadow-2xl",
   },
   light: {
-    bg: "bg-gray-100",
-    text: "text-gray-800",
-    hover: "hover:bg-gray-300",
+    bg: "bg-gradient-to-r from-blue-400 to-blue-600",
+    text: "text-white",
+    hover: "hover:from-blue-500 hover:to-blue-700",
     focus: "focus:ring-blue-500",
     shadow: "shadow-md",
   },
   dark: {
-    bg: "bg-gray-600",
+    bg: "bg-gradient-to-r from-blue-600 to-blue-800",
     text: "text-white",
-    hover: "hover:bg-gray-700",
-    focus: "focus:ring-gray-300",
+    hover: "hover:from-blue-700 hover:to-blue-900",
+    focus: "focus:ring-blue-400",
     shadow: "shadow-2xl",
   },
 };

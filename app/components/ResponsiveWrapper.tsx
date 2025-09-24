@@ -42,8 +42,8 @@ export function ResponsiveCard({
 }) {
   const baseClasses = `
     card-interactive
-    bg-white dark:bg-gray-800
-    border border-gray-200 dark:border-gray-700
+    bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/30 dark:to-purple-900/30
+    border border-blue-200 dark:border-blue-500
     rounded-2xl p-4 sm:p-6
     shadow-lg hover:shadow-xl
     transition-all duration-300
@@ -77,7 +77,7 @@ export function ResponsiveButton({
     primary:
       "bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl",
     secondary:
-      "bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300",
+      "bg-gradient-to-r from-blue-100 to-purple-100 hover:from-blue-200 hover:to-purple-200 dark:from-blue-700 dark:to-purple-700 dark:hover:from-blue-600 dark:hover:to-purple-600 text-gray-700 dark:text-white",
     outline:
       "border-2 border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white dark:border-blue-400 dark:text-blue-400 dark:hover:bg-blue-400 dark:hover:text-white",
   };

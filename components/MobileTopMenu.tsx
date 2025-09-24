@@ -64,9 +64,7 @@ export default function MobileConversationMenu() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className={`fixed top-4 left-4 z-40 p-2 rounded-lg shadow-md ${
-            isDark ? "bg-gray-800 text-white" : "bg-gray-200 text-black"
-          }`}
+          className={`fixed top-4 left-4 z-40 p-2 rounded-lg shadow-md bg-gradient-to-r from-blue-600 to-purple-700 text-white hover:from-blue-700 hover:to-purple-800 transition-all duration-300`}
           aria-label="Abrir menu"
         >
           <Menu size={24} />
@@ -80,17 +78,11 @@ export default function MobileConversationMenu() {
         }`}
       >
         <div
-          className={`relative flex flex-col w-64 h-full shadow-lg ${
-            isDark ? "bg-gray-900 text-white" : "bg-white text-black"
-          }`}
+          className={`relative flex flex-col w-64 h-full shadow-lg bg-gradient-to-br from-blue-900 to-purple-900 text-white`}
         >
           {/* Cabeçalho */}
           <div
-            className={`flex items-center justify-between p-4 border-b ${
-              isDark
-                ? "border-gray-700 bg-gray-800"
-                : "border-gray-200 bg-gray-100"
-            }`}
+            className={`flex items-center justify-between p-4 border-b border-blue-700 bg-gradient-to-r from-blue-800 to-purple-800`}
           >
             <div className="flex items-center">
               <MessageSquare className="w-6 h-6" />
@@ -98,9 +90,7 @@ export default function MobileConversationMenu() {
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className={`p-1 rounded-full ${
-                isDark ? "hover:bg-gray-700" : "hover:bg-gray-200"
-              }`}
+              className={`p-1 rounded-full hover:bg-blue-700/50 transition-colors`}
               aria-label="Fechar menu"
             >
               <X size={20} />
@@ -129,18 +119,12 @@ export default function MobileConversationMenu() {
           {/* Lista de conversas */}
           <div className="flex-1 overflow-y-auto">
             <h3
-              className={`sticky top-0 px-4 py-3 text-sm font-medium ${
-                isDark ? "bg-gray-900 text-gray-400" : "bg-white text-gray-500"
-              }`}
+              className={`sticky top-0 px-4 py-3 text-sm font-medium bg-gradient-to-r from-blue-800 to-purple-800 text-blue-200`}
             >
               Histórico de Conversas
             </h3>
             {conversations.length === 0 ? (
-              <div
-                className={`px-4 py-6 text-center ${
-                  isDark ? "text-gray-400" : "text-gray-500"
-                }`}
-              >
+              <div className={`px-4 py-6 text-center text-blue-200`}>
                 Nenhuma conversa recente
               </div>
             ) : (
@@ -149,25 +133,13 @@ export default function MobileConversationMenu() {
                   <li key={c.id}>
                     <button
                       onClick={() => setIsOpen(false)}
-                      className={`w-full text-left px-3 py-3 rounded-lg flex flex-col ${
-                        isDark
-                          ? "hover:bg-gray-700 text-white"
-                          : "hover:bg-gray-100 text-black"
-                      }`}
+                      className={`w-full text-left px-3 py-3 rounded-lg flex flex-col hover:bg-blue-700/30 text-white transition-colors`}
                     >
                       <span className="font-medium truncate">{c.title}</span>
-                      <span
-                        className={`text-sm truncate ${
-                          isDark ? "text-gray-400" : "text-gray-500"
-                        }`}
-                      >
+                      <span className={`text-sm truncate text-blue-100`}>
                         {c.lastMessage}
                       </span>
-                      <span
-                        className={`text-xs mt-1 ${
-                          isDark ? "text-gray-500" : "text-gray-400"
-                        }`}
-                      >
+                      <span className={`text-xs mt-1 text-blue-200`}>
                         {c.timestamp.toLocaleString("pt-BR", {
                           day: "numeric",
                           month: "short",
