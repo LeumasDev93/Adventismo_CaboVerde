@@ -56,21 +56,15 @@ const TypingIndicator: React.FC = () => {
           >
             <div className="flex space-x-1">
               <div
-                className={`w-2 h-2 rounded-full animate-bounce ${
-                  isDark ? "bg-gray-700" : "bg-gray-200"
-                }`}
+                className={`w-2 h-2 rounded-full animate-bounce bg-white `}
                 style={{ animationDelay: "0ms" }}
               />
               <div
-                className={`w-2 h-2 rounded-full animate-bounce ${
-                  isDark ? "bg-gray-300" : "bg-gray-200"
-                }`}
+                className={`w-2 h-2 rounded-full animate-bounce bg-white`}
                 style={{ animationDelay: "150ms" }}
               />
               <div
-                className={`w-2 h-2 rounded-full animate-bounce ${
-                  isDark ? "bg-gray-300" : "bg-gray-200"
-                }`}
+                className={`w-2 h-2 rounded-full animate-bounce bg-white `}
                 style={{ animationDelay: "300ms" }}
               />
             </div>
